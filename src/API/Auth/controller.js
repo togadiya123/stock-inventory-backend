@@ -58,6 +58,17 @@ export const signup = async (request, response) => {
     }
 };
 
+export const validateToken = async (request, response) => {
+    try {
+
+        const user = await User.findById(request.user._id, {_id : 0, firstName: 1, lastName: 1, email: 1});
+
+        response.status(200).send({message: "Token is valid", user});
+    } catch (error) {
+        response.status(400).send({error: error.message});
+    }
+};
+
 export const logout = async (request, response) => {
     try {
         const tokenObj = await Token.findOne({userId: request.user._id, accessToken: request.user.token.accessToken});
