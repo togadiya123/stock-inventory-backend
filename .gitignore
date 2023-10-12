@@ -8,10 +8,11 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
 
 # lockfiles
 package-lock.json
-yarn.lock
+yarn.lock!
