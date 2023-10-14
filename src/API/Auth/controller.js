@@ -64,7 +64,7 @@ export const validateToken = async (request, response) => {
 
         response.status(200).send({message: "Token is valid", user});
     } catch (error) {
-        response.status(400).send({error: error.message});
+        response.status(400).send({message: "Authentication required",error: error.message});
     }
 };
 
