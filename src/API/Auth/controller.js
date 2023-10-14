@@ -9,7 +9,7 @@ export const login = async (request, response) => {
         const {value, error} = loginBodySchema.validate(request.body);
         if (error) return schemaErrorResponse({response, error});
 
-        const user = await User.findOne({email: value.email}, {_id: 0, firstName: 1, lastName: 1, email: 1});
+        const user = await User.findOne({email: value.email}, {_id: 1, firstName: 1, lastName: 1, email: 1});
         if (!user) return response.status(400).json({
             message: `User does not exist`,
             error: `User with email ${value.email} does not exist`
@@ -19,8 +19,10 @@ export const login = async (request, response) => {
 
         const token = await user.generateAuthToken();
 
+        delete user._doc._id;
+
         return response.status(200).json({
-            message: `Welcom`, token, user
+            message: `Welcome back ${user.firstName}`, token, user
         });
 
     } catch (error) {
