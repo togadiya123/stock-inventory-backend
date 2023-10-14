@@ -24,7 +24,7 @@ export const login = async (request, response) => {
         });
 
     } catch (error) {
-        response.status(400).send({error: error.message});
+        response.status(400).send({message: error.message, error: error.message});
     }
 };
 
