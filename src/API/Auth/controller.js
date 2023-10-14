@@ -19,8 +19,10 @@ export const login = async (request, response) => {
 
         const token = await user.generateAuthToken();
 
+        delete user._doc._id;
+
         return response.status(200).json({
-            message: `Welcom`, token, user
+            message: `Welcome back ${user.firstName}`, token, user
         });
 
     } catch (error) {
