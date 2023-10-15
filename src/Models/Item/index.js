@@ -1,4 +1,5 @@
 import {Schema, model} from "mongoose";
+
 const validateUniqueName = async function ({userId, name}) {
     const existingItem = await this.findOne({name, userId});
     if (existingItem)
@@ -30,6 +31,11 @@ const itemSchema = new Schema({
         default: ""
     },
     category: {
+        type: String,
+        trim: true,
+        required: true,
+    },
+    subCategory: {
         type: String,
         trim: true,
         required: true,

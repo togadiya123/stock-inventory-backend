@@ -6,7 +6,8 @@ export const addItemBodySchema = Joi.object().keys({
     image: Joi.string().trim(),
     purchasePrice: Joi.number().required(),
     sellPrice: Joi.number().required(),
-    category: Joi.string().required()
+    category: Joi.string().required(),
+    subCategory: Joi.string().required(),
 });
 
 export const getItemsBodySchema = Joi.object().keys({
