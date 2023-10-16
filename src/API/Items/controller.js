@@ -32,7 +32,7 @@ export const getItems = async (request, response) => {
 
         const items = await Item.aggregate(getItemsAggregation({userId: request.user._id, ...value})).then(r => r[0]);
 
-        return response.status(200).send({items, message: `Items have been fetched`});
+        return response.status(200).send({...items, message: `Items have been fetched`});
     } catch (error) {
         return response.status(400).send({error: error.message});
     }
