@@ -20,7 +20,8 @@ export const getItemsAggregation = ({userId, search, page, limit}) => [
             purchasePrice: 1,
             sellPrice: 1,
             image: 1,
-            category : 1
+            category : 1,
+            subCategory : 1,
         }
     }, {
         $facet: {
