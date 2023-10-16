@@ -13,7 +13,7 @@ export const getItemsAggregation = ({userId, search, page, limit}) => [
     },
     {
         $project: {
-            _id: 1,
+            id: "$_id",
             name: 1,
             description: 1,
             purchasePrice: 1,
