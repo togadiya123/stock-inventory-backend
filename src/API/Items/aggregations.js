@@ -14,6 +14,7 @@ export const getItemsAggregation = ({userId, search, page, limit}) => [
     {
         $project: {
             id: "$_id",
+            _id: 0,
             name: 1,
             description: 1,
             purchasePrice: 1,
