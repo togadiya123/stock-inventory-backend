@@ -1,21 +1,17 @@
 import {schemaErrorResponse} from "../../Utiles/index.js";
 import {Item} from "../../Models/index.js";
 import {
-    getItemsBodySchema,
-    addItemBodySchema,
-    deleteItemBodySchema
+    getItemsBodySchema, addItemBodySchema, deleteItemBodySchema, getItemBodySchema
 } from "./bodySchema.js";
 import {getItemsAggregation} from "./aggregations.js";
 
 export const addItem = async (request, response) => {
     try {
         const {value, error} = addItemBodySchema.validate(request.body);
-        if (error)
-            return schemaErrorResponse({response, error});
+        if (error) return schemaErrorResponse({response, error});
 
         await Item.create({
-            ...value,
-            userId: request.user._id,
+            ...value, userId: request.user._id,
         });
 
         return response.status(201).send({message: `'${value.name}' item is added`});
@@ -27,8 +23,7 @@ export const addItem = async (request, response) => {
 export const getItems = async (request, response) => {
     try {
         const {value, error} = getItemsBodySchema.validate(request.query);
-        if (error)
-            return schemaErrorResponse({response, error});
+        if (error) return schemaErrorResponse({response, error});
 
         const items = await Item.aggregate(getItemsAggregation({userId: request.user._id, ...value})).then(r => r[0]);
 
@@ -40,15 +35,27 @@ export const getItems = async (request, response) => {
 
 export const deleteItem = async (request, response) => {
     try {
-
         const {value, error} = deleteItemBodySchema.validate(request.params);
-        if (error)
-            return schemaErrorResponse({response, error});
+        if (error) return schemaErrorResponse({response, error});
 
         await Item.validateItemId({userId: request.user._id, itemId: value.itemId});
         await Item.deleteOne({_id: value.itemId, userId: request.user._id});
 
         return response.status(200).send({message: `Item has been deleted`});
+    } catch (error) {
+        return response.status(400).send({error: error.message});
+    }
+};
+
+export const getItem = async (request, response) => {
+    try {
+        const {value, error} = getItemBodySchema.validate(request.params);
+        if (error) return schemaErrorResponse({response, error});
+
+        const item = await Item.validateItemId({userId: request.user._id, itemId: value.itemId});
+
+        return response.status(200).send({item, message: `Item has been fetched`});
+
     } catch (error) {
         return response.status(400).send({error: error.message});
     }

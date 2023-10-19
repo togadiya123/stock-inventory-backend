@@ -8,10 +8,15 @@ const validateUniqueName = async function ({userId, name}) {
 };
 
 const validateItemId = async function ({userId, itemId}) {
-    const existingItemCollection = await this.findOne({_id: itemId, userId});
-    if (!existingItemCollection)
+    const existingItem = await this.findOne({_id: itemId, userId}, {
+        createdAt: 0,
+        updatedAt: 0,
+        userId: 0,
+        __v: 0,
+    });
+    if (!existingItem)
         throw new Error('Selected item doesn\'t exists');
-    return true;
+    return existingItem;
 };
 
 const itemSchema = new Schema({
