@@ -26,7 +26,7 @@ export const addItem = async (request, response) => {
 
 export const getItems = async (request, response) => {
     try {
-        const {value, error} = getItemsBodySchema.validate(request.params);
+        const {value, error} = getItemsBodySchema.validate(request.query);
         if (error)
             return schemaErrorResponse({response, error});
 
