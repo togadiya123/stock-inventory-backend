@@ -1,7 +1,12 @@
 import {schemaErrorResponse} from "../../Utiles/index.js";
 import {Item} from "../../Models/index.js";
 import {
-    getItemsBodySchema, addItemBodySchema, deleteItemBodySchema, getItemBodySchema
+    getItemsBodySchema,
+    addItemBodySchema,
+    deleteItemBodySchema,
+    getItemBodySchema,
+    updateItemBodySchema,
+    updateItemsParamsSchema
 } from "./bodySchema.js";
 import {getItemsAggregation} from "./aggregations.js";
 
@@ -61,6 +66,27 @@ export const getItem = async (request, response) => {
                 _id: undefined,
             }, message: `Item has been fetched`
         });
+
+    } catch (error) {
+        return response.status(400).send({error: error.message});
+    }
+};
+
+export const updateItem = async (request, response) => {
+    try {
+        const paramsValidation = updateItemsParamsSchema.validate(request.params);
+        if (paramsValidation.error) return schemaErrorResponse({response, error: paramsValidation.error});
+
+        const {value, error} = updateItemBodySchema.validate(request.body);
+        if (error) return schemaErrorResponse({response, error});
+
+        await Item.findByIdAndUpdate(paramsValidation.value.itemId, {
+            ...value,
+        }, {
+            strict: true
+        });
+
+        return response.status(200).send({message: `Item has been updated`});
 
     } catch (error) {
         return response.status(400).send({error: error.message});
