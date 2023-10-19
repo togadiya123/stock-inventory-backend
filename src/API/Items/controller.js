@@ -54,10 +54,13 @@ export const getItem = async (request, response) => {
 
         const item = await Item.validateItemId({userId: request.user._id, itemId: value.itemId});
 
-        item.id = item._id;
-        delete item._id;
-
-        return response.status(200).send({item, message: `Item has been fetched`});
+        return response.status(200).send({
+            item: {
+                id: item.id,
+                ...item.toObject(),
+                _id: undefined,
+            }, message: `Item has been fetched`
+        });
 
     } catch (error) {
         return response.status(400).send({error: error.message});
