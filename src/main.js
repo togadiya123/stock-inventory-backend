@@ -2,7 +2,7 @@ import { server } from "./Server/index.js";
 import { config } from "./Config/index.js";
 import { connectDatabase } from "./MongoDB/index.js";
 
-const main = async () => {
+export const main = async () => {
     try {
         config();
 
