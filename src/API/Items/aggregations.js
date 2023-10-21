@@ -14,16 +14,17 @@ export const getItemsAggregation = ({ userId, search, page, limit }) => [
     },
     {
         $project: {
-            _id: 1,
+            id: "$_id",
+            _id: 0,
             name: 1,
             description: 1,
             purchasePrice: 1,
             sellPrice: 1,
             image: 1,
-            category: 1,
-        },
-    },
-    {
+            category : 1,
+            subCategory : 1,
+        }
+    }, {
         $facet: {
             metadata: [{ $count: "total" }],
             data: [{ $skip: page * limit }, { $limit: limit }],

@@ -19,3 +19,21 @@ export const getItemsBodySchema = Joi.object().keys({
 export const deleteItemBodySchema = Joi.object().keys({
     itemId: Joi.string().alphanum().case("lower").min(24).max(24).required(),
 });
+
+export const getItemBodySchema = Joi.object().keys({
+    itemId: Joi.string().alphanum().case('lower').min(24).max(24).required(),
+});
+
+export const updateItemsParamsSchema = Joi.object().keys({
+    itemId: Joi.string().alphanum().case('lower').min(24).max(24).required(),
+});
+
+export const updateItemBodySchema = Joi.object().keys({
+    name: Joi.string().trim(),
+    description: Joi.string().trim(),
+    image: Joi.string().trim(),
+    purchasePrice: Joi.number(),
+    sellPrice: Joi.number(),
+    category: Joi.string(),
+    subCategory: Joi.string(),
+});
