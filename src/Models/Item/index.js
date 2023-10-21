@@ -6,15 +6,17 @@ const validateUniqueName = async function ({ userId, name }) {
     return true;
 };
 
-const validateItemId = async function ({userId, itemId}) {
-    const existingItem = await this.findOne({_id: itemId, userId}, {
-        createdAt: 0,
-        updatedAt: 0,
-        userId: 0,
-        __v: 0,
-    });
-    if (!existingItem)
-        throw new Error('Selected item doesn\'t exists');
+const validateItemId = async function ({ userId, itemId }) {
+    const existingItem = await this.findOne(
+        { _id: itemId, userId },
+        {
+            createdAt: 0,
+            updatedAt: 0,
+            userId: 0,
+            __v: 0,
+        },
+    );
+    if (!existingItem) throw new Error("Selected item doesn't exists");
     return existingItem;
 };
 
