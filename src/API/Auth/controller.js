@@ -44,7 +44,7 @@ export const signup = async (request, response) => {
         });
         if (error) return schemaErrorResponse({ response, error });
 
-        const userIsExist = User.findOne({ email: value.email });
+        const userIsExist = await User.findOne({ email: value.email });
         if (userIsExist)
             return response.status(400).json({
                 message: `User with email ${value.email} already exist`,
