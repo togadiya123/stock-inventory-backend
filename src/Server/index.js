@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 
-import {router} from "../API/index.js";
+import { router } from "../API/index.js";
 
 const server = async () => {
     try {
@@ -17,6 +17,4 @@ const server = async () => {
     }
 };
 
-export {
-    server
-}
+export { server };

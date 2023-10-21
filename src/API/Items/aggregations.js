@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
 
-export const getItemsAggregation = ({userId, search, page, limit}) => [
+export const getItemsAggregation = ({ userId, search, page, limit }) => [
     {
         $match: {
             userId: new mongoose.Types.ObjectId(userId),
-            name: {$regex: search, $options: "i"},
-        }
-    }, {
+            name: { $regex: search, $options: "i" },
+        },
+    },
+    {
         $sort: {
-            'name': 1
-        }
+            name: 1,
+        },
     },
     {
         $project: {
@@ -20,20 +21,28 @@ export const getItemsAggregation = ({userId, search, page, limit}) => [
             purchasePrice: 1,
             sellPrice: 1,
             image: 1,
-            category : 1,
-            subCategory : 1,
-        }
-    }, {
+            category: 1,
+            subCategory: 1,
+        },
+    },
+    {
         $facet: {
-            metadata: [{$count: 'total'}], data: [{$skip: (page) * limit}, {$limit: limit}],
-        }
-    }, {
+            metadata: [{ $count: "total" }],
+            data: [{ $skip: page * limit }, { $limit: limit }],
+        },
+    },
+    {
         $project: {
-            data: 1, total: {$arrayElemAt: ['$metadata.total', 0]},
-        }
-    }, {
+            data: 1,
+            total: { $arrayElemAt: ["$metadata.total", 0] },
+        },
+    },
+    {
         $addFields: {
-            total: {$ifNull: ["$total", 0]}, page: {$toInt: page}, limit: {$toInt: limit}, search: {$toString: search}
-        }
-    }
+            total: { $ifNull: ["$total", 0] },
+            page: { $toInt: page },
+            limit: { $toInt: limit },
+            search: { $toString: search },
+        },
+    },
 ];

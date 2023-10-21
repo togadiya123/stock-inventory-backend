@@ -1,70 +1,74 @@
-import {Schema, model} from "mongoose";
+import { Schema, model } from "mongoose";
 
-const validateUniqueName = async function ({userId, name}) {
-    const existingItem = await this.findOne({name, userId});
-    if (existingItem)
-        throw new Error(`'${name}' named item already exists`);
+const validateUniqueName = async function ({ userId, name }) {
+    const existingItem = await this.findOne({ name, userId });
+    if (existingItem) throw new Error(`'${name}' named item already exists`);
     return true;
 };
 
-const validateItemId = async function ({userId, itemId}) {
-    const existingItem = await this.findOne({_id: itemId, userId}, {
-        createdAt: 0,
-        updatedAt: 0,
-        userId: 0,
-        __v: 0,
-    });
-    if (!existingItem)
-        throw new Error('Selected item doesn\'t exists');
+const validateItemId = async function ({ userId, itemId }) {
+    const existingItem = await this.findOne(
+        { _id: itemId, userId },
+        {
+            createdAt: 0,
+            updatedAt: 0,
+            userId: 0,
+            __v: 0,
+        },
+    );
+    if (!existingItem) throw new Error("Selected item doesn't exists");
     return existingItem;
 };
 
-const itemSchema = new Schema({
-    userId: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "User"
+const itemSchema = new Schema(
+    {
+        userId: {
+            type: Schema.Types.ObjectId,
+            required: true,
+            ref: "User",
+        },
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        description: {
+            type: String,
+            trim: true,
+            default: "",
+        },
+        category: {
+            type: String,
+            trim: true,
+            required: true,
+        },
+        subCategory: {
+            type: String,
+            trim: true,
+            required: true,
+        },
+        image: {
+            type: String,
+            trim: true,
+        },
+        purchasePrice: {
+            type: String,
+            trim: true,
+            required: true,
+        },
+        sellPrice: {
+            type: String,
+            trim: true,
+            required: true,
+        },
     },
-    name: {
-        type: String,
-        required: true,
-        trim: true
+    {
+        timestamps: true,
+        statics: {
+            validateUniqueName,
+            validateItemId,
+        },
     },
-    description: {
-        type: String,
-        trim: true,
-        default: ""
-    },
-    category: {
-        type: String,
-        trim: true,
-        required: true,
-    },
-    subCategory: {
-        type: String,
-        trim: true,
-        required: true,
-    },
-    image: {
-        type: String,
-        trim: true,
-    },
-    purchasePrice: {
-        type: String,
-        trim: true,
-        required: true,
-    },
-    sellPrice: {
-        type: String,
-        trim: true,
-        required: true,
-    },
-}, {
-    timestamps: true,
-    statics: {
-        validateUniqueName,
-        validateItemId,
-    }
-});
+);
 
 export const Item = model("Item", itemSchema);
