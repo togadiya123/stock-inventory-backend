@@ -24,7 +24,10 @@ export const getCategoriesAggregation = ({ userId, search, page, limit }) => [
     {
         $facet: {
             metadata: [{ $count: "total" }],
-            data: [{ $skip: page * limit }, { $limit: limit }],
+            data:
+                limit === -1
+                    ? []
+                    : [{ $skip: page * limit }, { $limit: limit }],
         },
     },
     {
@@ -36,7 +39,7 @@ export const getCategoriesAggregation = ({ userId, search, page, limit }) => [
     {
         $addFields: {
             total: { $ifNull: ["$total", 0] },
-            page: { $toInt: page },
+            page: { $toInt: limit === -1 ? 0 : page },
             limit: { $toInt: limit },
             search: { $toString: search },
         },
