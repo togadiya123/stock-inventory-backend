@@ -8,7 +8,7 @@ const validateUniqueName = async function ({ userId, name }) {
 };
 
 const validateCategoryId = async function ({ userId, categoryId }) {
-    const existingItem = await this.findOne(
+    const existingCategory = await this.findOne(
         { _id: categoryId, userId },
         {
             createdAt: 0,
@@ -17,8 +17,8 @@ const validateCategoryId = async function ({ userId, categoryId }) {
             __v: 0,
         },
     );
-    if (!existingItem) throw new Error("Selected category doesn't exists");
-    return existingItem;
+    if (!existingCategory) throw new Error("Selected category doesn't exists");
+    return existingCategory;
 };
 
 const categorySchema = new Schema(
@@ -52,4 +52,4 @@ const categorySchema = new Schema(
     },
 );
 
-export const Category = model("Category", categorySchema);
+export const Category = model("Category", categorySchema, "Categories");

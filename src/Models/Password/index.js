@@ -23,4 +23,4 @@ const passwordSchema = new Schema(
     },
 );
 
-export const Password = model("Password", passwordSchema);
+export const Password = model("Password", passwordSchema, "Passwords");

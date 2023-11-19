@@ -1,5 +1,5 @@
 import { schemaErrorResponse } from "../../Utiles/index.js";
-import { Item } from "../../Models/index.js";
+import { Category, Item, SubCategory } from "../../Models/index.js";
 import {
     getItemsBodySchema,
     addItemBodySchema,
@@ -15,6 +15,24 @@ export const addItem = async (request, response) => {
         const { value, error } = addItemBodySchema.validate(request.body);
         if (error) return schemaErrorResponse({ response, error });
 
+        await Category.validateCategoryId({
+            userId: request.user._id,
+            categoryId: value.categoryId,
+        });
+
+        await SubCategory.validateSubCategoryId({
+            userId: request.user._id,
+            categoryId: value.categoryId,
+            subCategoryId: value.subCategoryId,
+        });
+
+        await Item.validateUniqueName({
+            userId: request.user._id,
+            categoryId: value.categoryId,
+            subCategoryId: value.subCategoryId,
+            name: value.name,
+        });
+
         await Item.create({
             ...value,
             userId: request.user._id,
@@ -22,7 +40,7 @@ export const addItem = async (request, response) => {
 
         return response
             .status(201)
-            .send({ message: `'${value.name}' item is added` });
+            .send({ message: `'${value.name}' item has been added` });
     } catch (error) {
         return response.status(400).send({ error: error.message });
     }
@@ -73,11 +91,7 @@ export const getItem = async (request, response) => {
         });
 
         return response.status(200).send({
-            item: {
-                id: item.id,
-                ...item.toObject(),
-                _id: undefined,
-            },
+            item: await item.format(),
             message: "Item has been fetched",
         });
     } catch (error) {
@@ -98,6 +112,32 @@ export const updateItem = async (request, response) => {
 
         const { value, error } = updateItemBodySchema.validate(request.body);
         if (error) return schemaErrorResponse({ response, error });
+
+        const item = await Item.validateItemId({
+            userId: request.user._id,
+            itemId: paramsValidation.value.itemId,
+        });
+
+        if (value.categoryId)
+            await Category.validateCategoryId({
+                userId: request.user._id,
+                categoryId: value.categoryId,
+            });
+
+        if (value.subCategoryId)
+            await SubCategory.validateSubCategoryId({
+                userId: request.user._id,
+                categoryId: value.categoryId,
+                subCategoryId: value.subCategoryId,
+            });
+
+        if (value.name)
+            await Item.validateUniqueName({
+                userId: request.user._id,
+                categoryId: item.categoryId,
+                subCategoryId: item.subCategoryId,
+                name: value.name,
+            });
 
         await Item.findByIdAndUpdate(
             paramsValidation.value.itemId,

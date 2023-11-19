@@ -15,6 +15,11 @@ export const addCategory = async (request, response) => {
         const { value, error } = addCategoryBodySchema.validate(request.body);
         if (error) return schemaErrorResponse({ response, error });
 
+        await Category.validateUniqueName({
+            userId: request.user._id,
+            name: value.name,
+        });
+
         await Category.create({
             ...value,
             userId: request.user._id,
@@ -114,6 +119,12 @@ export const updateCategory = async (request, response) => {
             request.body,
         );
         if (error) return schemaErrorResponse({ response, error });
+
+        if (value.name)
+            await Category.validateUniqueName({
+                userId: request.user._id,
+                name: value.name,
+            });
 
         await Category.findByIdAndUpdate(
             paramsValidation.value.categoryId,

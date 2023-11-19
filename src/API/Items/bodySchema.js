@@ -6,8 +6,18 @@ export const addItemBodySchema = Joi.object().keys({
     image: Joi.string().trim(),
     purchasePrice: Joi.number().required(),
     sellPrice: Joi.number().required(),
-    category: Joi.string().required(),
-    subCategory: Joi.string().required(),
+    categoryId: Joi.string()
+        .alphanum()
+        .case("lower")
+        .min(24)
+        .max(24)
+        .required(),
+    subCategoryId: Joi.string()
+        .alphanum()
+        .case("lower")
+        .min(24)
+        .max(24)
+        .required(),
 });
 
 export const getItemsBodySchema = Joi.object().keys({
@@ -34,6 +44,6 @@ export const updateItemBodySchema = Joi.object().keys({
     image: Joi.string().trim(),
     purchasePrice: Joi.number(),
     sellPrice: Joi.number(),
-    category: Joi.string(),
-    subCategory: Joi.string(),
+    categoryId: Joi.string().alphanum().case("lower").min(24).max(24),
+    subCategoryId: Joi.string().alphanum().case("lower").min(24).max(24),
 });
