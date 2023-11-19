@@ -23,7 +23,7 @@ export const addItemBodySchema = Joi.object().keys({
 export const getItemsBodySchema = Joi.object().keys({
     search: Joi.string().empty("").trim().default(""),
     page: Joi.number().min(0).default(0),
-    limit: Joi.number().min(5).default(5),
+    limit: Joi.number().min(-1).default(5),
 });
 
 export const deleteItemBodySchema = Joi.object().keys({
