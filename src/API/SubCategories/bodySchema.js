@@ -16,6 +16,7 @@ export const getSubCategoriesBodySchema = Joi.object().keys({
     search: Joi.string().empty("").trim().default(""),
     page: Joi.number().min(0).default(0),
     limit: Joi.number().min(-1).default(5),
+    categoryId: Joi.string().alphanum().case("lower").min(24).max(24),
 });
 
 export const deleteSubCategoryBodySchema = Joi.object().keys({

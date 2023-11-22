@@ -48,6 +48,12 @@ export const getSubCategories = async (request, response) => {
         );
         if (error) return schemaErrorResponse({ response, error });
 
+        if (value.categoryId)
+            await Category.validateCategoryId({
+                userId: request.user._id,
+                categoryId: value.categoryId,
+            });
+
         const categories = await SubCategory.aggregate(
             getSubCategoriesAggregation({ userId: request.user._id, ...value }),
         ).then((r) => r[0]);

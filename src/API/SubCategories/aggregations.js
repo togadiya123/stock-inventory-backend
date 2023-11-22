@@ -5,11 +5,15 @@ export const getSubCategoriesAggregation = ({
     search,
     page,
     limit,
+    categoryId,
 }) => [
     {
         $match: {
             userId: new mongoose.Types.ObjectId(userId),
             name: { $regex: search, $options: "i" },
+            ...(categoryId
+                ? { categoryId: new mongoose.Types.ObjectId(categoryId) }
+                : {}),
         },
     },
     {
