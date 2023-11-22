@@ -28,7 +28,7 @@ const validateSubCategoryId = async function ({ userId, subCategoryId }) {
 const format = async function () {
     return {
         ...this.toObject(),
-        id: this.id,
+        id: this._id,
         category: (
             await this.model("Category").validateCategoryId({
                 userId: this.userId,

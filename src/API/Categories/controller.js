@@ -20,14 +20,15 @@ export const addCategory = async (request, response) => {
             name: value.name,
         });
 
-        await Category.create({
+        const category = await Category.create({
             ...value,
             userId: request.user._id,
         });
 
-        return response
-            .status(201)
-            .send({ message: `'${value.name}' category is added` });
+        return response.status(201).send({
+            message: `'${value.name}' category is added`,
+            category: await category.format(),
+        });
     } catch (error) {
         return response.status(400).send({ error: error.message });
     }

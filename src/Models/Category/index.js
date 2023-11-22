@@ -21,6 +21,18 @@ const validateCategoryId = async function ({ userId, categoryId }) {
     return existingCategory;
 };
 
+const format = async function () {
+    return {
+        ...this.toObject(),
+        id: this._id,
+        userId: undefined,
+        _id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+        __v: undefined,
+    };
+};
+
 const categorySchema = new Schema(
     {
         userId: {
@@ -48,6 +60,9 @@ const categorySchema = new Schema(
         statics: {
             validateUniqueName,
             validateCategoryId,
+        },
+        methods: {
+            format,
         },
     },
 );

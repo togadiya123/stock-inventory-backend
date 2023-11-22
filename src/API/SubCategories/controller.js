@@ -28,14 +28,15 @@ export const addSubCategory = async (request, response) => {
             name: value.name,
         });
 
-        await SubCategory.create({
+        const subCategory = await SubCategory.create({
             ...value,
             userId: request.user._id,
         });
 
-        return response
-            .status(201)
-            .send({ message: `'${value.name}' sub-category is added` });
+        return response.status(201).send({
+            message: `'${value.name}' sub-category is added`,
+            subCategory: await subCategory.format(),
+        });
     } catch (error) {
         return response.status(400).send({ error: error.message });
     }
