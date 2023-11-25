@@ -34,13 +34,13 @@ const format = async function () {
         ...this.toObject(),
         id: this.id,
         category: (
-            await this.model("Category").validateCategoryId({
+            await this.model("Category").findOne({
                 userId: this.userId,
                 categoryId: this.categoryId,
             })
         )?.name,
         subCategory: (
-            await this.model("SubCategory").validateSubCategoryId({
+            await this.model("SubCategory").findOne({
                 userId: this.userId,
                 categoryId: this.categoryId,
                 subCategoryId: this.subCategoryId,
