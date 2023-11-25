@@ -1,5 +1,5 @@
 import { schemaErrorResponse } from "../../Utiles/index.js";
-import { Category } from "../../Models/index.js";
+import { Category, Item, SubCategory } from "../../Models/index.js";
 import {
     getCategoriesBodySchema,
     addCategoryBodySchema,
@@ -64,10 +64,38 @@ export const deleteCategory = async (request, response) => {
             userId: request.user._id,
             categoryId: value.categoryId,
         });
+
         await Category.deleteOne({
             _id: value.categoryId,
             userId: request.user._id,
         });
+
+        await SubCategory.updateMany(
+            {
+                categoryId: value.categoryId,
+                userId: request.user._id,
+            },
+            {
+                categoryId: null,
+            },
+            {
+                strict: true,
+            },
+        );
+
+        await Item.updateMany(
+            {
+                categoryId: value.categoryId,
+                userId: request.user._id,
+            },
+            {
+                categoryId: null,
+                subCategoryId: null,
+            },
+            {
+                strict: true,
+            },
+        );
 
         return response
             .status(200)

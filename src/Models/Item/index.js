@@ -33,19 +33,23 @@ const format = async function () {
     return {
         ...this.toObject(),
         id: this.id,
-        category: (
-            await this.model("Category").findOne({
-                userId: this.userId,
-                categoryId: this.categoryId,
-            })
-        )?.name,
-        subCategory: (
-            await this.model("SubCategory").findOne({
-                userId: this.userId,
-                categoryId: this.categoryId,
-                subCategoryId: this.subCategoryId,
-            })
-        )?.name,
+        category: this.categoryId
+            ? (
+                  await this.model("Category").validateCategoryId({
+                      userId: this.userId,
+                      categoryId: this.categoryId,
+                  })
+              ).name
+            : "",
+        subCategory: this.subCategoryId
+            ? (
+                  await this.model("SubCategory").validateSubCategoryId({
+                      userId: this.userId,
+                      categoryId: this.categoryId,
+                      subCategoryId: this.subCategoryId,
+                  })
+              )?.name
+            : "",
         userId: undefined,
         _id: undefined,
         createdAt: undefined,
