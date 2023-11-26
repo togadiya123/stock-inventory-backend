@@ -1,7 +1,17 @@
-import { Schema, model } from "mongoose";
+import { model, Schema } from "mongoose";
 
-const validateUniqueName = async function ({ userId, name }) {
-    const existingItem = await this.findOne({ name, userId });
+const validateUniqueName = async function ({
+    userId,
+    name,
+    categoryId,
+    subCategoryId,
+}) {
+    const existingItem = await this.findOne({
+        name,
+        userId,
+        categoryId,
+        subCategoryId,
+    });
     if (existingItem) throw new Error(`'${name}' named item already exists`);
     return true;
 };
@@ -12,12 +22,40 @@ const validateItemId = async function ({ userId, itemId }) {
         {
             createdAt: 0,
             updatedAt: 0,
-            userId: 0,
             __v: 0,
         },
     );
     if (!existingItem) throw new Error("Selected item doesn't exists");
     return existingItem;
+};
+
+const format = async function () {
+    return {
+        ...this.toObject(),
+        id: this.id,
+        category: this.categoryId
+            ? (
+                  await this.model("Category").validateCategoryId({
+                      userId: this.userId,
+                      categoryId: this.categoryId,
+                  })
+              ).name
+            : "",
+        subCategory: this.subCategoryId
+            ? (
+                  await this.model("SubCategory").validateSubCategoryId({
+                      userId: this.userId,
+                      categoryId: this.categoryId,
+                      subCategoryId: this.subCategoryId,
+                  })
+              )?.name
+            : "",
+        userId: undefined,
+        _id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+        __v: undefined,
+    };
 };
 
 const itemSchema = new Schema(
@@ -37,15 +75,15 @@ const itemSchema = new Schema(
             trim: true,
             default: "",
         },
-        category: {
-            type: String,
-            trim: true,
+        categoryId: {
+            type: Schema.Types.ObjectId,
             required: true,
+            ref: "Category",
         },
-        subCategory: {
-            type: String,
-            trim: true,
+        subCategoryId: {
+            type: Schema.Types.ObjectId,
             required: true,
+            ref: "SubCategory",
         },
         image: {
             type: String,
@@ -68,7 +106,10 @@ const itemSchema = new Schema(
             validateUniqueName,
             validateItemId,
         },
+        methods: {
+            format,
+        },
     },
 );
 
-export const Item = model("Item", itemSchema);
+export const Item = model("Item", itemSchema, "Items");

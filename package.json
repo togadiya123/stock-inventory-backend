@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node src/main.js",
     "dev": "nodemon src/main.js",
+    "seed": "node src/Seed/index.js --userId 6559c89ed257bca8191c6887",
     "lint": "eslint \"src/**/*.js\""
   },
   "author": "togadiya123",

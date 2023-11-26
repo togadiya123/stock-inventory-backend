@@ -1,10 +1,19 @@
 import mongoose from "mongoose";
 
-export const getItemsAggregation = ({ userId, search, page, limit }) => [
+export const getSubCategoriesAggregation = ({
+    userId,
+    search,
+    page,
+    limit,
+    categoryId,
+}) => [
     {
         $match: {
             userId: new mongoose.Types.ObjectId(userId),
             name: { $regex: search, $options: "i" },
+            ...(categoryId
+                ? { categoryId: new mongoose.Types.ObjectId(categoryId) }
+                : {}),
         },
     },
     {
@@ -21,26 +30,14 @@ export const getItemsAggregation = ({ userId, search, page, limit }) => [
         },
     },
     {
-        $lookup: {
-            from: "SubCategories",
-            localField: "subCategoryId",
-            foreignField: "_id",
-            as: "subCategory",
-        },
-    },
-    {
         $project: {
             id: "$_id",
             _id: 0,
             name: 1,
             description: 1,
-            purchasePrice: 1,
-            sellPrice: 1,
             image: 1,
             categoryId: 1,
-            subCategoryId: 1,
             category: { $arrayElemAt: ["$category.name", 0] },
-            subCategory: { $arrayElemAt: ["$subCategory.name", 0] },
         },
     },
     {
