@@ -14,10 +14,6 @@
     "sourceType": "module"
   },
   "rules": {
-    "indent": [
-      "error",
-      4
-    ],
     "linebreak-style": [
       "error",
       "unix"
@@ -36,8 +32,6 @@
     "no-unexpected-multiline": [
       "error"
     ],
-    "prettier/prettier": [
-      "error"
-    ]
+    "prettier/prettier": "error"
   }
 }
